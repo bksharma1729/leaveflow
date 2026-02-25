@@ -13,9 +13,9 @@ const { authorize } = require("../middleware/roleMiddleware");
 const { validateRequest } = require("../middleware/validateMiddleware");
 
 const router = express.Router();
-
+//Leave Summary API
 router.get("/summary", protect, getSummary);
-
+//Apply for leave API
 router.post(
   "/",
   protect,
@@ -31,7 +31,7 @@ router.post(
   validateRequest,
   applyLeave
 );
-
+//Get my leaves API 
 router.get("/my", protect, authorize("employee"), getMyLeaves);
 router.get("/pending", protect, authorize("manager", "admin"), getPendingLeaves);
 router.get("/", protect, authorize("admin"), getAllLeaves);

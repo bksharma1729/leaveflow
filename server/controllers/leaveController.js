@@ -33,7 +33,7 @@ const getPendingLeaves = async (req, res) => {
 
   return res.json({ leaves });
 };
-
+//Leave Controller
 const getAllLeaves = async (req, res) => {
   const leaves = await Leave.find()
     .populate("employee", "name email role")
@@ -42,7 +42,7 @@ const getAllLeaves = async (req, res) => {
 
   return res.json({ leaves });
 };
-
+//Approve / Reject API
 const updateLeaveStatus = async (req, res) => {
   const { status, managerComment } = req.body;
   const { id } = req.params;
