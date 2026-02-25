@@ -1,5 +1,5 @@
 const Leave = require("../models/Leave");
-
+//apply for leave
 const applyLeave = async (req, res) => {
   const { type, startDate, endDate, reason } = req.body;
 
