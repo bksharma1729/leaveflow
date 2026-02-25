@@ -2,7 +2,7 @@ import express from "express";
 import dotenv from "dotenv";
 import cors from "cors";
 import connectDB from "./config/db.js";
-
+const authRoutes = require("./src/routes/authRoutes");
 dotenv.config();
 
 // Connect to database
@@ -14,6 +14,7 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
+app.use("/api/auth", authRoutes);
 // Test Route
 app.get("/", (req, res) => {
   res.send("🚀 LeaveFlow API is running...");
