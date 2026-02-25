@@ -4,11 +4,11 @@ const { getUsers, updateUserRole } = require("../controllers/userController");
 const { protect } = require("../middleware/authMiddleware");
 const { authorize } = require("../middleware/roleMiddleware");
 const { validateRequest } = require("../middleware/validateMiddleware");
-
+//User Routes
 const router = express.Router();
 
 router.get("/", protect, authorize("admin"), getUsers);
-
+//Update user role API
 router.patch(
   "/:id/role",
   protect,
