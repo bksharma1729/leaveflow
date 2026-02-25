@@ -57,6 +57,7 @@ const login = async (req, res) => {
   });
 };
 
+
 const me = async (req, res) => {
   return res.json({ user: sanitizeUser(req.user) });
 };
