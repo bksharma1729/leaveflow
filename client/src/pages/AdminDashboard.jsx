@@ -4,7 +4,7 @@ import AnalyticsCharts from "../components/AnalyticsCharts";
 import LeaveTable from "../components/LeaveTable";
 import Sidebar from "../components/Sidebar";
 import SummaryCards from "../components/SummaryCards";
-import { useToast } from "../context/ToastContext";
+import { useToast } from "../context/useToast";
 
 const AdminDashboard = () => {
   const [summary, setSummary] = useState(null);
