@@ -1,6 +1,8 @@
 import { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
+import BrandLogo from "./BrandLogo";
 import { useAuth } from "../context/useAuth";
+import { useTheme } from "../context/useTheme";
 
 const linksByRole = {
   employee: [{ to: "/employee", label: "My Dashboard" }],
@@ -10,6 +12,7 @@ const linksByRole = {
 
 const Sidebar = () => {
   const { user, logout } = useAuth();
+  const { isDark, toggleTheme } = useTheme();
   const location = useLocation();
   const [open, setOpen] = useState(false);
 
@@ -17,7 +20,7 @@ const Sidebar = () => {
     <aside className="w-full rounded-2xl border border-slate-200/70 bg-white/85 p-4 shadow-sm backdrop-blur md:h-[calc(100vh-2rem)] md:w-72 md:rounded-3xl md:sticky md:top-4 md:flex md:flex-col md:p-5">
       <div className="mb-4 flex items-center justify-between border-b border-slate-200 pb-3 md:mb-6 md:block md:pb-4">
         <div>
-          <p className="text-[10px] font-semibold uppercase tracking-[0.22em] text-teal-700 sm:text-xs">Leave Management</p>
+          <BrandLogo compact />
           <p className="mt-2 text-base font-bold text-slate-900 sm:text-lg">{user?.name}</p>
           <p className="text-[10px] uppercase tracking-widest text-slate-500 sm:text-xs">{user?.role}</p>
         </div>
@@ -53,6 +56,14 @@ const Sidebar = () => {
           <p className="text-sm font-semibold">Quick Tip</p>
           <p className="mt-1 text-xs text-teal-100">Use filters and CSV export to review leave patterns faster.</p>
         </div>
+
+        <button
+          type="button"
+          onClick={toggleTheme}
+          className="w-full rounded-xl border border-slate-300 bg-slate-50 px-3 py-2 text-sm font-semibold text-slate-700 hover:bg-slate-100"
+        >
+          {isDark ? "Switch to Light Mode" : "Switch to Dark Mode"}
+        </button>
 
         <button
           type="button"

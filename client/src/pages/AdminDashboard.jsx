@@ -13,6 +13,7 @@ const AdminDashboard = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [query, setQuery] = useState("");
+  const [busyOverrideId, setBusyOverrideId] = useState("");
   const { showToast } = useToast();
 
   const fetchData = async () => {
@@ -58,6 +59,43 @@ const AdminDashboard = () => {
     }
   };
 
+  const overrideDecision = async (leave) => {
+    const nextStatusInput = window.prompt("Enter new status (Approved or Rejected):", leave.status === "Approved" ? "Rejected" : "Approved");
+    if (nextStatusInput === null) {
+      return;
+    }
+
+    const normalizedStatus = nextStatusInput.trim();
+    if (!["Approved", "Rejected"].includes(normalizedStatus)) {
+      showToast("Status must be Approved or Rejected", "error");
+      return;
+    }
+
+    const overrideReasonInput = window.prompt(`Reason for overriding ${leave.status} to ${normalizedStatus}:`, "");
+    if (overrideReasonInput === null) {
+      return;
+    }
+
+    const overrideReason = overrideReasonInput.trim();
+    if (!overrideReason) {
+      showToast("Override reason is required", "error");
+      return;
+    }
+
+    try {
+      setBusyOverrideId(leave._id);
+      await api.put(`/leave/${leave._id}/override`, { status: normalizedStatus, overrideReason });
+      await fetchData();
+      showToast(`Leave overridden to ${normalizedStatus}`, "success");
+    } catch (err) {
+      const message = err.response?.data?.message || "Unable to override leave decision";
+      setError(message);
+      showToast(message, "error");
+    } finally {
+      setBusyOverrideId("");
+    }
+  };
+
   return (
     <div className="min-h-screen p-3 sm:p-4 md:p-6">
       <div className="mx-auto flex max-w-7xl flex-col gap-6 md:flex-row">
@@ -70,7 +108,6 @@ const AdminDashboard = () => {
 
           {error ? <p className="rounded-lg bg-rose-100 p-3 text-sm text-rose-700">{error}</p> : null}
           {loading ? <p className="text-slate-600">Loading admin data...</p> : <SummaryCards summary={summary} />}
-          {!loading ? <AnalyticsCharts summary={summary} leaves={leaves} title="Organization Analytics" /> : null}
 
           <section className="overflow-hidden rounded-2xl border border-slate-200/70 bg-white/90 shadow-sm backdrop-blur">
             <div className="flex flex-col gap-3 border-b border-slate-100 px-4 py-3 sm:flex-row sm:flex-wrap sm:items-center sm:justify-between">
@@ -148,9 +185,36 @@ const AdminDashboard = () => {
             </div>
           </section>
 
+          {!loading ? <AnalyticsCharts summary={summary} leaves={leaves} title="Organization Analytics" /> : null}
+
           <section>
             <h2 className="mb-3 text-lg font-semibold">All Leave Records</h2>
-            <LeaveTable leaves={leaves} showEmployee searchable exportable />
+            <LeaveTable
+              leaves={leaves}
+              showEmployee
+              searchable
+              exportable
+              actionRenderer={(leave) => {
+                const managerDecision =
+                  (leave.status === "Approved" || leave.status === "Rejected") &&
+                  leave.reviewedBy?.role === "manager";
+
+                if (!managerDecision) {
+                  return "-";
+                }
+
+                return (
+                  <button
+                    type="button"
+                    className="rounded-lg bg-indigo-600 px-3 py-1.5 text-xs font-semibold text-white hover:bg-indigo-700 disabled:opacity-60"
+                    onClick={() => overrideDecision(leave)}
+                    disabled={busyOverrideId === leave._id}
+                  >
+                    {busyOverrideId === leave._id ? "Overriding..." : "Override"}
+                  </button>
+                );
+              }}
+            />
           </section>
         </main>
       </div>

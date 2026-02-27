@@ -31,9 +31,16 @@ const leaveSchema = new mongoose.Schema(
       enum: ["Pending", "Approved", "Rejected"],
       default: "Pending",
     },
+    originalStatus: {
+      type: String,
+      enum: ["Approved", "Rejected"],
+      default: null,
+    },
     managerComment: {
       type: String,
       default: "",
+      trim: true,
+      maxlength: 300,
     },
     reviewedBy: {
       type: mongoose.Schema.Types.ObjectId,
@@ -41,6 +48,21 @@ const leaveSchema = new mongoose.Schema(
       default: null,
     },
     reviewedAt: {
+      type: Date,
+      default: null,
+    },
+    overriddenBy: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
+      default: null,
+    },
+    overrideReason: {
+      type: String,
+      default: "",
+      trim: true,
+      maxlength: 300,
+    },
+    overrideAt: {
       type: Date,
       default: null,
     },

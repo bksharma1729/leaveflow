@@ -6,6 +6,13 @@ const statusClass = {
   Rejected: "bg-rose-100 text-rose-800 border border-rose-200",
 };
 
+const getStatusLabel = (leave) => {
+  if (leave.overriddenBy) {
+    return `${leave.status} (Overridden by Admin)`;
+  }
+  return leave.status;
+};
+
 const exportCsv = (rows, showEmployee) => {
   const headers = [
     ...(showEmployee ? ["Employee Name", "Employee Email"] : []),
@@ -132,7 +139,7 @@ const LeaveTable = ({
                 <div>
                   <p className="text-slate-500">Status</p>
                   <span className={`inline-block rounded-full px-2 py-0.5 text-[11px] font-semibold ${statusClass[leave.status]}`}>
-                    {leave.status}
+                    {getStatusLabel(leave)}
                   </span>
                 </div>
               </div>
@@ -142,6 +149,11 @@ const LeaveTable = ({
               </p>
               <p className="mt-2 text-xs text-slate-500">Reason</p>
               <p className="text-xs text-slate-700">{leave.reason}</p>
+              {leave.overriddenBy ? (
+                <p className="mt-2 rounded-md bg-indigo-50 px-2 py-1 text-[11px] font-medium text-indigo-700">
+                  Override Reason: {leave.overrideReason || "-"}
+                </p>
+              ) : null}
               <div className="mt-3 flex flex-wrap gap-2">{actionRenderer ? actionRenderer(leave) : null}</div>
             </article>
           ))
@@ -180,10 +192,13 @@ const LeaveTable = ({
                   </td>
                   <td className="max-w-md px-4 py-3 text-slate-600" title={leave.reason}>
                     {leave.reason}
+                    {leave.overriddenBy ? (
+                      <p className="mt-1 text-xs font-medium text-indigo-700">Override Reason: {leave.overrideReason || "-"}</p>
+                    ) : null}
                   </td>
                   <td className="px-4 py-3">
                     <span className={`rounded-full px-3 py-1 text-xs font-semibold ${statusClass[leave.status]}`}>
-                      {leave.status}
+                      {getStatusLabel(leave)}
                     </span>
                   </td>
                   <td className="px-4 py-3">

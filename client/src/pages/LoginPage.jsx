@@ -1,5 +1,6 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import BrandLogo from "../components/BrandLogo";
 import { useAuth } from "../context/useAuth";
 import { useToast } from "../context/useToast";
 
@@ -11,6 +12,13 @@ const LoginPage = () => {
   const [form, setForm] = useState({ email: "", password: "" });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+
+  useEffect(() => {
+    document.body.classList.add("force-light-theme");
+    return () => {
+      document.body.classList.remove("force-light-theme");
+    };
+  }, []);
 
   const handleChange = (event) => {
     setForm((prev) => ({ ...prev, [event.target.name]: event.target.value }));
@@ -44,12 +52,14 @@ const LoginPage = () => {
     <div className="relative flex min-h-screen items-center justify-center p-3 sm:p-4">
       <div className="grid w-full max-w-5xl overflow-hidden rounded-3xl border border-white/60 bg-white/80 shadow-2xl backdrop-blur md:grid-cols-2">
         <section className="hidden bg-gradient-to-br from-teal-900 via-cyan-800 to-sky-700 p-10 text-white md:block">
+          <BrandLogo invert compact />
           <p className="text-xs font-semibold uppercase tracking-[0.3em] text-cyan-100">Employee Portal</p>
           <h1 className="mt-5 text-4xl font-bold leading-tight">Manage leaves without paperwork and delays.</h1>
           <p className="mt-4 text-cyan-100">Fast approvals, transparent status tracking, and role-based dashboards.</p>
         </section>
 
         <section className="p-6 sm:p-8 md:p-10">
+          <BrandLogo compact />
           <p className="text-2xl font-bold text-slate-900 sm:text-3xl">Welcome back</p>
           <p className="mt-1 text-sm text-slate-500">Sign in to continue</p>
 

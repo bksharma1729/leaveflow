@@ -18,12 +18,12 @@ const ManagerDashboard = () => {
 
   const fetchReviewLeaves = useCallback(async () => {
     try {
-      const pendingRes = await api.get("/leaves/pending");
-      return pendingRes.data.leaves || [];
+      const historyRes = await api.get("/leaves/history");
+      return historyRes.data.leaves || [];
     } catch (err) {
       if (err.response?.status === 404) {
-        const reviewRes = await api.get("/leaves/review");
-        return reviewRes.data.leaves || [];
+        const pendingRes = await api.get("/leaves/pending");
+        return pendingRes.data.leaves || [];
       }
       throw err;
     }
@@ -72,11 +72,21 @@ const ManagerDashboard = () => {
   }, [autoRefresh, fetchData]);
 
   const updateStatus = async (leaveId, status) => {
-    const managerComment = window.prompt(`Optional comment for ${status.toLowerCase()} decision:`, "") || "";
+    const managerComment = window.prompt(`Comment required for ${status.toLowerCase()} decision:`, "");
+    if (managerComment === null) {
+      showToast("Action cancelled: manager comment is required", "error");
+      return;
+    }
+
+    const normalizedComment = managerComment.trim();
+    if (!normalizedComment) {
+      showToast("Manager comment is required", "error");
+      return;
+    }
 
     try {
       setBusyId(leaveId);
-      await api.patch(`/leaves/${leaveId}/status`, { status, managerComment });
+      await api.patch(`/leaves/${leaveId}/status`, { status, managerComment: normalizedComment });
       await fetchData();
       showToast(`Request ${status.toLowerCase()} successfully`, "success");
     } catch (err) {
@@ -95,7 +105,7 @@ const ManagerDashboard = () => {
         <main className="flex-1 space-y-6">
           <header className="rounded-2xl border border-indigo-100 bg-gradient-to-r from-indigo-900 to-slate-800 p-4 text-white shadow-lg sm:p-6">
             <h1 className="text-xl font-bold sm:text-2xl">Manager Dashboard</h1>
-            <p className="mt-1 text-xs text-indigo-100 sm:text-sm">Review pending requests quickly with search, filters, comments, and CSV export.</p>
+            <p className="mt-1 text-xs text-indigo-100 sm:text-sm">Review and track leave request history with search, filters, comments, and CSV export.</p>
           </header>
 
           <section className="flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-slate-200/70 bg-white/80 p-3 shadow-sm">
@@ -134,7 +144,7 @@ const ManagerDashboard = () => {
           {!loading ? <AnalyticsCharts summary={summary} leaves={leaves} title="Team Leave Analytics" /> : null}
 
           <section>
-            <h2 className="mb-3 text-lg font-semibold">Leave Requests</h2>
+            <h2 className="mb-3 text-lg font-semibold">Leave Request History</h2>
             <LeaveTable
               leaves={leaves}
               showEmployee

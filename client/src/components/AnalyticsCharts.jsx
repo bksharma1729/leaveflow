@@ -76,14 +76,14 @@ const AnalyticsCharts = ({ summary, leaves = [], title = "Analytics Overview" })
   };
 
   return (
-    <section className="rounded-2xl border border-slate-200/70 bg-white/90 p-4 shadow-sm backdrop-blur sm:p-5">
+    <section className="analytics-panel rounded-2xl border border-slate-200/70 bg-white/90 p-4 shadow-sm sm:p-5">
       <h2 className="mb-4 text-lg font-semibold">{title}</h2>
       <div className="grid gap-4 lg:grid-cols-2">
-        <div className="h-64 rounded-xl border border-slate-100 bg-slate-50/70 p-3 sm:h-72 sm:p-4">
+        <div className="analytics-card h-64 rounded-xl border border-slate-100 bg-slate-50/70 p-3 sm:h-72 sm:p-4">
           <p className="mb-2 text-sm font-semibold text-slate-600">Status Breakdown</p>
           <Doughnut data={doughnutData} options={commonOptions} />
         </div>
-        <div className="h-64 rounded-xl border border-slate-100 bg-slate-50/70 p-3 sm:h-72 sm:p-4">
+        <div className="analytics-card h-64 rounded-xl border border-slate-100 bg-slate-50/70 p-3 sm:h-72 sm:p-4">
           <p className="mb-2 text-sm font-semibold text-slate-600">Leave Type Distribution</p>
           <Bar
             data={typeDistribution}

@@ -4,8 +4,10 @@ const {
   applyLeave,
   getMyLeaves,
   getPendingLeaves,
+  getManagerHistoryLeaves,
   getAllLeaves,
   updateLeaveStatus,
+  overrideLeaveStatus,
   getSummary,
 } = require("../controllers/leaveController");
 const { protect } = require("../middleware/authMiddleware");
@@ -34,6 +36,7 @@ router.post(
 //Get my leaves API 
 router.get("/my", protect, authorize("employee"), getMyLeaves);
 router.get("/pending", protect, authorize("manager", "admin"), getPendingLeaves);
+router.get("/history", protect, authorize("manager", "admin"), getManagerHistoryLeaves);
 router.get("/", protect, authorize("admin"), getAllLeaves);
 
 router.patch(
@@ -43,10 +46,33 @@ router.patch(
   [
     param("id").isMongoId().withMessage("Invalid leave ID"),
     body("status").isIn(["Approved", "Rejected"]).withMessage("Status must be Approved or Rejected"),
-    body("managerComment").optional().trim().isLength({ max: 300 }),
+    body("managerComment")
+      .trim()
+      .notEmpty()
+      .withMessage("Manager comment is required")
+      .isLength({ max: 300 })
+      .withMessage("Manager comment can be at most 300 characters"),
   ],
   validateRequest,
   updateLeaveStatus
+);
+
+router.put(
+  "/:id/override",
+  protect,
+  authorize("admin"),
+  [
+    param("id").isMongoId().withMessage("Invalid leave ID"),
+    body("status").isIn(["Approved", "Rejected"]).withMessage("Status must be Approved or Rejected"),
+    body("overrideReason")
+      .trim()
+      .notEmpty()
+      .withMessage("Override reason is required")
+      .isLength({ max: 300 })
+      .withMessage("Override reason can be at most 300 characters"),
+  ],
+  validateRequest,
+  overrideLeaveStatus
 );
 
 module.exports = router;

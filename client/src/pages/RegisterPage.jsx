@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import BrandLogo from "../components/BrandLogo";
 import { useAuth } from "../context/useAuth";
 import { useToast } from "../context/useToast";
 
@@ -38,12 +39,14 @@ const RegisterPage = () => {
     <div className="relative flex min-h-screen items-center justify-center p-3 sm:p-4">
       <div className="grid w-full max-w-5xl overflow-hidden rounded-3xl border border-white/60 bg-white/80 shadow-2xl backdrop-blur md:grid-cols-2">
         <section className="hidden bg-gradient-to-br from-slate-900 via-indigo-900 to-slate-700 p-10 text-white md:block">
+          <BrandLogo invert compact />
           <p className="text-xs font-semibold uppercase tracking-[0.3em] text-indigo-200">Join System</p>
           <h1 className="mt-5 text-4xl font-bold leading-tight">Create your employee account and start filing leaves.</h1>
           <p className="mt-4 text-indigo-100">Role upgrades are handled by admins from the control panel.</p>
         </section>
 
         <section className="p-6 sm:p-8 md:p-10">
+          <BrandLogo compact />
           <p className="text-2xl font-bold text-slate-900 sm:text-3xl">Create account</p>
           <p className="mt-1 text-sm text-slate-500">New users start as employee</p>
 
