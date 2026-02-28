@@ -1,3 +1,5 @@
+<img width="1894" height="857" alt="Screenshot 2026-02-27 014500" src="https://github.com/user-attachments/assets/cf5e77ff-4fd4-48d6-8367-2640bf03b366" />
+
 LeaveFlow – Full Stack Leave Management System
 🧾 Overview
 
